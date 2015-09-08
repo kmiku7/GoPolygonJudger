@@ -48,7 +48,6 @@ func NewJudger(dataDirPath string) (areaJudger *AreaJudger, err error) {
 	}
 
 	if len(inBox) != len(outBox) {
-		err = fmt.Errorf("InBox(%d) and OutBox(%d) donot match, dataDirPath:%s", len(inBox), len(outBox), dataDirPath)
 		return
 	}
 
@@ -62,15 +61,12 @@ func NewJudger(dataDirPath string) (areaJudger *AreaJudger, err error) {
 }
 
 func (judger *AreaJudger) ToStdout() {
-	fmt.Println("InBox")
 	for _, item := range judger.InBox {
 		fmt.Printf("\t%v\n", *item)
 	}
-	fmt.Println("OutBox")
 	for _, item := range judger.OutBox {
 		fmt.Printf("\t%v\n", *item)
 	}
-	fmt.Println("Edges")
 	for idx, item := range judger.Edges {
 		fmt.Printf("\tCity %d\n", idx + 1)
 		for _, point := range *item {
@@ -82,24 +78,20 @@ func (judger *AreaJudger) ToStdout() {
 func (judger *AreaJudger) FindCityId(point Point) int {
 	id := judger.inBoxMatch(point)
 	if id >= 0 {
-		fmt.Println("hit inbox")
 		return id
 	}
 
 	ids := judger.outBoxMatch(point)
 	if len(ids) <= 0 {
-		fmt.Println("miss outbox")
 		return -1
 	}
 
 	for _, id := range ids {
 		if judger.polygonMatch(id, point) {
-			fmt.Println("hit outbox")
 			return id
 		}
 	}
 
-	fmt.Println("miss inner outbox")
 	return -1
 }
 
@@ -123,7 +115,6 @@ func (judger *AreaJudger) outBoxMatch(point Point) []int {
 }
 
 func (judger *AreaJudger) polygonMatch(id int, point Point) bool {
-	fmt.Printf("id:%d point:%v\n", id, point)
 	if id >= len(judger.Edges) {
 		return false
 	}
@@ -132,31 +123,31 @@ func (judger *AreaJudger) polygonMatch(id int, point Point) bool {
 		return false
 	}
 
-	fmt.Println("start process")
 	from := edges[0]
 	crossCount := 0
 	match := 0
 	idx := 1
 	for ; idx < len(edges); idx += 1 {
 		to := edges[idx]
+    // (((from.lat < lat && to.lat >= lat) || (to.lat < lat &&
+    // from.lat >= lat)) && (from.lng <= lng || to.lng <= lng))
 		if ((point.Lat <= to.Lat && point.Lat > from.Lat) || (point.Lat > to.Lat && point.Lat <= from.Lat)) && (point.Lng >= from.Lng || point.Lng >= to.Lng) {
-			//if from.Lat == to.Lat {
-			//	if from.Lat < point.Lat {
-			//		crossCount += 1
-			//	} else if from.Lat == point.Lat {
-			//		return false
-			//	}
-			//} else {
+			if from.Lat == to.Lat {
+				if from.Lat < point.Lat {
+					crossCount += 1
+				} else if from.Lat == point.Lat {
+					return false
+				}
+			} else {
 				crossLng := (to.Lng-from.Lng)*(point.Lat-from.Lat)/(to.Lat-from.Lat) + from.Lng
 				if crossLng < point.Lng {
 					crossCount += 1
 				}
-			//}
+			}
 			match += 1
 		}
 		from = to
 	}
-	fmt.Printf("count:%d, match:%d, idx:%d, len:%d\n", crossCount, match, idx, len(edges))
 	return (crossCount & 1) != 0
 }
 
@@ -222,7 +213,7 @@ func parsePolygon(filename string) (polygon *Polygon, err error) {
 	count, err = fmt.Fscanf(reader, "%f,%f\n", &lng, &lat)
 	for err == nil && count == 2 {
 		tmpPoints = append(tmpPoints, &Point{lat, lng})
-		count, err = fmt.Fscanf(reader, "%f,%f\n", &lat, &lng)
+		count, err = fmt.Fscanf(reader, "%f,%f\n", &lng, &lat)
 	}
 	if err == io.EOF {
 		tPolygon := Polygon(tmpPoints)

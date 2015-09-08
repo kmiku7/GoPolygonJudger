@@ -1,7 +1,6 @@
 package gopolygonjudger
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -31,31 +30,26 @@ func TestNewFail(t *testing.T) {
 	if id != 1 {
 		t.Errorf("1 find city failed, point:%v, ret:%d, ex:1", point1, id)
 	}
-	fmt.Println("-----------")
 
 	id = judger.FindCityId(point2)
 	if id != -1 {
-		t.Errorf("2 find city faild, point:%v, ret:%d, ex:-1", point2, id)
+		t.Fatalf("2 find city faild, point:%v, ret:%d, ex:-1", point2, id)
 	}
-	fmt.Println("-----------")
 
 	id = judger.FindCityId(point3)
 	if id != 0 {
 		t.Errorf("3 find city failed, point:%v, ret:%d, ex:0", point3, id)
 	}
-	fmt.Println("-----------")
 
 	id = judger.FindCityId(point4)
 	if id != -1 {
 		t.Errorf("4 find city failed, point:%v, ret:%d, ex:-1", point4, id)
 	}
-	fmt.Println("-----------")
 
 	id = judger.FindCityId(point5)
 	if id != 0 {
 		t.Errorf("5 find city failed, point:%v, ret:%d, ex:0", point5, id)
 	}
-	fmt.Println("-----------")
 
 	id = judger.FindCityId(point6)
 	if id != 0 {

@@ -1,0 +1,3 @@
+[submodule "fulldata"]
+	path = fulldata
+	url = git@github.com:kmiku7/gopolygonjudger-data.git
