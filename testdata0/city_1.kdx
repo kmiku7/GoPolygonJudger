@@ -1,0 +1,18 @@
+Layout {
+  FileType : "delimited"
+  Delimiter : ","
+  Latitude : "1"
+  Longitude : "0"
+  SkipRows : "1"
+  TextCodec : "System"
+  FieldDefinitions {
+    0 {
+      Name : "116.81449"
+      Type : "double"
+    }
+    1 {
+      Name : "34.40812"
+      Type : "double"
+    }
+  }
+}
