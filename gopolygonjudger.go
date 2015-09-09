@@ -21,7 +21,6 @@ type Point struct {
 	Lng float64
 }
 
-// 逆时针
 type Polygon []*Point
 
 type Rectangle struct {
@@ -125,12 +124,9 @@ func (judger *AreaJudger) polygonMatch(id int, point Point) bool {
 
 	from := edges[0]
 	crossCount := 0
-	match := 0
 	idx := 1
 	for ; idx < len(edges); idx += 1 {
 		to := edges[idx]
-    // (((from.lat < lat && to.lat >= lat) || (to.lat < lat &&
-    // from.lat >= lat)) && (from.lng <= lng || to.lng <= lng))
 		if ((point.Lat <= to.Lat && point.Lat > from.Lat) || (point.Lat > to.Lat && point.Lat <= from.Lat)) && (point.Lng >= from.Lng || point.Lng >= to.Lng) {
 			if from.Lat == to.Lat {
 				if from.Lat < point.Lat {
@@ -144,7 +140,6 @@ func (judger *AreaJudger) polygonMatch(id int, point Point) bool {
 					crossCount += 1
 				}
 			}
-			match += 1
 		}
 		from = to
 	}
